@@ -29,8 +29,6 @@ AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot(process.env.NEST_APP_MONGODB_URI, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
-                useFindAndModify: false,
-                useCreateIndex: true,
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
