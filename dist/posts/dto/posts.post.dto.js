@@ -7,6 +7,9 @@ class PostsPostDto extends (0, swagger_1.PickType)(posts_schema_1.Post, [
     'title',
     'content',
     'hashtag',
+    'media',
+    'author',
+    'userId',
 ]) {
 }
 exports.PostsPostDto = PostsPostDto;

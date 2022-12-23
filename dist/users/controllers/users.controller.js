@@ -41,7 +41,6 @@ let UsersController = class UsersController {
         return await this.authService.jwtLogIn(data);
     }
     async updateUser(user, file, { body }) {
-        console.log(file);
         return this.usersService.updateProfile(user, file, body);
     }
     deleteUser(user) {

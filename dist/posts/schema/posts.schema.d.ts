@@ -5,6 +5,7 @@ export declare class Post extends Document {
     title: string;
     author: string;
     content: string;
+    media: string;
     hashtag: string[];
     isLike: boolean;
     likes: number;
@@ -13,6 +14,7 @@ export declare class Post extends Document {
         id: string;
         title: string;
         content: string;
+        media: string;
         hashtag: string[];
         isLike: boolean;
         likes: number;

@@ -13,10 +13,12 @@ exports.PostsService = void 0;
 const likes_repository_1 = require("./../../likes/likes.repository");
 const posts_repository_1 = require("./../posts.repository");
 const common_1 = require("@nestjs/common");
+const aws_service_1 = require("../../aws.service");
 let PostsService = class PostsService {
-    constructor(postsRepository, likesRepository) {
+    constructor(postsRepository, likesRepository, awsService) {
         this.postsRepository = postsRepository;
         this.likesRepository = likesRepository;
+        this.awsService = awsService;
     }
     async getAllPosts(user) {
         const allPosts = await this.postsRepository.findAllPosts();
@@ -32,8 +34,10 @@ let PostsService = class PostsService {
         const isLike = await this.likesRepository.findCurrentUserIsLike(post._id, user);
         return Object.assign(Object.assign({}, post.toObject().readOnlyData), { isLike });
     }
-    async writePost(user, body) {
-        const post = await this.postsRepository.create(Object.assign(Object.assign({}, body), { author: user.nickname, userId: user._id }));
+    async writePost(user, file, body) {
+        const uploadAwsS3 = await this.awsService.uploadFileToS3('media', file);
+        const mediaUrl = this.awsService.getAwsS3FileUrl(uploadAwsS3.key);
+        const post = await this.postsRepository.create(Object.assign(Object.assign({}, body), { media: mediaUrl, author: user.nickname, userId: user._id }));
         return post.readOnlyData;
     }
     async deletePost(user, id) {
@@ -54,11 +58,15 @@ let PostsService = class PostsService {
     async likePost(id, user) {
         return await this.postsRepository.likePost(id, user);
     }
+    async myPost(user) {
+        return await this.postsRepository.findMyPosts(user);
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [posts_repository_1.PostsRepository,
-        likes_repository_1.LikesRepository])
+        likes_repository_1.LikesRepository,
+        aws_service_1.AwsService])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

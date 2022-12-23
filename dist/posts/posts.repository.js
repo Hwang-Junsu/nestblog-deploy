@@ -22,9 +22,10 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const mongoose = require("mongoose");
 let PostsRepository = class PostsRepository {
-    constructor(postModel, likeModel) {
+    constructor(postModel, likeModel, userModel) {
         this.postModel = postModel;
         this.likeModel = likeModel;
+        this.userModel = userModel;
     }
     async findAllPosts() {
         const allPosts = await this.postModel
@@ -95,12 +96,21 @@ let PostsRepository = class PostsRepository {
             userId: user._id,
         });
     }
+    async findMyPosts(user) {
+        const allPosts = await this.postModel
+            .find({ userId: user._id })
+            .populate('comments', mongoose.model('comments', comments_schema_1.CommentSchema))
+            .populate('user', mongoose.model('users', users_schema_1.UserSchema));
+        return allPosts;
+    }
 };
 PostsRepository = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_schema_1.Post.name)),
     __param(1, (0, mongoose_1.InjectModel)(likes_schema_1.Like.name)),
+    __param(2, (0, mongoose_1.InjectModel)(users_schema_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model])
 ], PostsRepository);
 exports.PostsRepository = PostsRepository;

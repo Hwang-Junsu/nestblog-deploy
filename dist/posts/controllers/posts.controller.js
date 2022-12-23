@@ -19,6 +19,8 @@ const user_decorator_1 = require("./../../common/decorators/user.decorator");
 const jwt_guard_1 = require("./../../auth/jwt/jwt.guard");
 const posts_service_1 = require("./../services/posts.service");
 const common_1 = require("@nestjs/common");
+const multer_1 = require("@nestjs/platform-express/multer");
+const decorators_1 = require("@nestjs/common/decorators");
 let PostsController = class PostsController {
     constructor(postsService) {
         this.postsService = postsService;
@@ -26,14 +28,17 @@ let PostsController = class PostsController {
     getAllPosts(user) {
         return this.postsService.getAllPosts(user);
     }
-    writePost(body, user) {
-        return this.postsService.writePost(user, body);
+    writePost(user, file, { body }) {
+        return this.postsService.writePost(user, file, body);
     }
     deletePost(id, user) {
         return this.postsService.deletePost(user, id);
     }
     updatePost(id, body, user) {
         return this.postsService.updatePost(user, id, body);
+    }
+    myPost(user) {
+        return this.postsService.myPost(user);
     }
     getOnePost(user, id) {
         return this.postsService.getOnePost(user, id);
@@ -52,11 +57,13 @@ __decorate([
 ], PostsController.prototype, "getAllPosts", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JWTAuthGuard),
+    (0, common_1.UseInterceptors)((0, multer_1.FileInterceptor)('media')),
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.CurrentUser)()),
+    __param(0, (0, user_decorator_1.CurrentUser)()),
+    __param(1, (0, decorators_1.UploadedFile)()),
+    __param(2, (0, decorators_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [posts_post_dto_1.PostsPostDto, users_schema_1.User]),
+    __metadata("design:paramtypes", [users_schema_1.User, Object, Object]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "writePost", null);
 __decorate([
@@ -79,6 +86,14 @@ __decorate([
         users_schema_1.User]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "updatePost", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JWTAuthGuard),
+    (0, common_1.Get)('/me'),
+    __param(0, (0, user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [users_schema_1.User]),
+    __metadata("design:returntype", void 0)
+], PostsController.prototype, "myPost", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JWTAuthGuard),
     (0, common_1.Get)('/:id'),

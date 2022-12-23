@@ -36,6 +36,12 @@ __decorate([
     __metadata("design:type", String)
 ], Post.prototype, "content", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    (0, class_validator_1.IsUrl)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], Post.prototype, "media", void 0);
+__decorate([
     (0, mongoose_1.Prop)([String]),
     (0, class_validator_1.IsOptional)({ each: true }),
     __metadata("design:type", Array)
@@ -69,6 +75,7 @@ exports._PostSchema.virtual('readOnlyData').get(function () {
         id: this.id,
         title: this.title,
         content: this.content,
+        media: this.media,
         hashtag: this.hashtag,
         isLike: this.isLike,
         likes: this.likes,
